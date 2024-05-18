@@ -21,7 +21,7 @@
   // "features": {},
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  "forwardPorts": [8000],
+  // "forwardPorts": [8000],
 
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "npm install",
@@ -29,7 +29,7 @@
   // Configure tool-specific properties.
   "customizations": {
     "vscode": {
-      "devPort": 8000,
+      // "devPort": 8000,
       "extensions": [
         "eamodio.gitlens",
         "formulahendry.auto-close-tag",
