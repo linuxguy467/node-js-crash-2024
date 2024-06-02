@@ -24,7 +24,7 @@
   // "forwardPorts": [8000],
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "npm install",
+  "postCreateCommand": "npm install && echo 'PORT=5000' >> .env",
 
   // Configure tool-specific properties.
   "customizations": {
