@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon --env-file=.env server2.js"
+    "start": "nodemon --exec sh clear_logs.sh -w server2.js -e js"
   },
   "author": "Matthew Hemingway",
   "license": "MIT",

@@ -1,6 +1,13 @@
 import { createServer } from 'node:http';
+import fs from 'node:fs/promises';
+import url from 'node:url';
+import path from 'node:path';
 
 const PORT = process.env.PORT;
+
+// Get current path
+const __filename = url.fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 let users = [
   { id: 1, name: 'John Doe' },
@@ -8,9 +15,38 @@ let users = [
   { id: 3, name: 'Jim Doe' },
 ];
 
+// Log file helper
+const printToLogFile = async (output) => {
+  // check log dir exists
+  const checkLogDirectory = async (dirPath) => {
+    try {
+      await fs.access(dirPath, fs.constants.F_OK);
+      return true;
+    } catch (error) {
+      if (error.code !== 'ENOENT' && error.code !== 'EEXIST') {
+        console.error(error);
+      }
+      return false;
+    }
+  };
+
+  const logFileName = 'log_output.log';
+  try {
+    const logDir = path.join(__dirname, 'log');
+    const doesDirExist = await checkLogDirectory(logDir);
+    if (!doesDirExist) {
+      await fs.mkdir(logDir);
+    }
+    await fs.appendFile(path.join(logDir, logFileName), `${output}\n`);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 // Logger middleware
 const logger = (req, res, next) => {
   console.log(`${req.method} ${req.url}`);
+  printToLogFile(`${req.method} ${req.url}`);
   next();
 };
 
@@ -80,6 +116,9 @@ const createUserHandler = (req, res) => {
       }
     } catch (err) {
       console.error(err);
+      setTimeout(() => {
+        printToLogFile(err.stack);
+      }, 5000);
       res.statusCode = 400;
       res.write(
         JSON.stringify({ message: `Error creating user: ${err.message}` })
@@ -126,6 +165,9 @@ const updateUserHandler = (req, res) => {
         }
       } catch (err) {
         console.error(err);
+        setTimeout(() => {
+          printToLogFile(err.stack);
+        }, 5000);
         res.statusCode = 400;
         res.write(
           JSON.stringify({
